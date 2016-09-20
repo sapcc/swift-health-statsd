@@ -14,28 +14,34 @@
 
 import json
 import logging
+import os
 import subprocess
-import types
+
+from swift_health_statsd.collector import Collector
 
 log = logging.getLogger(__name__)
 
-class SwiftDispersion(checks.AgentCheck):
+class SwiftDispersionCollector(Collector):
+
+    def metric_name_prefix(self):
+        return "swift_dispersion"
+
+    def logger(self):
+        return log
 
     GAUGES = [
-        "object.copies_expected",
-        "object.copies_found",
-        "object.copies_missing",
-        "object.overlapping",
-        "container.copies_expected",
-        "container.copies_found",
-        "container.copies_missing",
-        "container.overlapping",
+        "object_copies_expected",
+        "object_copies_found",
+        "object_copies_missing",
+        "object_overlapping",
+        "container_copies_expected",
+        "container_copies_found",
+        "container_copies_missing",
+        "container_overlapping",
     ]
 
-    def swift_dispersion(self):
-        executable = 'swift-dispersion-report'
-        if 'swift_dispersion' in self.init_config:
-            executable = self.init_config['swift_dispersion']
+    def prepare(self):
+        executable = os.getenv('SWIFT_DISPERSION_REPORT', 'swift-dispersion-report')
 
         cmd = " ".join((executable, '-j'))
         pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
@@ -49,28 +55,22 @@ class SwiftDispersion(checks.AgentCheck):
             # remove first line
             out = out.split("\n", 1).pop()
 
-        return out
+        self.out = json.loads(out)
+        print("out = {}".format(self.out))
 
-    def check(self, instance):
-        dimensions = self._set_dimensions(None, instance)
-
-        swift_dispersion = self.swift_dispersion()
-        assert(swift_dispersion)
-
-        dispersion = json.loads(swift_dispersion)
-        for metric in self.GAUGES:
-            log.debug("Checking metric {0}".format(metric))
-            disp_metric = metric.split('.', 1)
-
-            if disp_metric[1] == 'copies_missing':
-                value = (dispersion[disp_metric[0]]['copies_expected'] -
-                         dispersion[disp_metric[0]]['copies_found'])
-            else:
-                value = dispersion[disp_metric[0]][disp_metric[1]]
-
-            assert(type(value) in (types.IntType, types.LongType,
-                                   types.FloatType))
-
-            metric = self.normalize(metric.lower(), 'swift.dispersion')
-            log.debug("Sending {0}={1}".format(metric, value))
-            self.gauge(metric, value, dimensions=dimensions)
+    def object_copies_expected(self):
+        return self.out['object']['copies_expected']
+    def object_copies_found(self):
+        return self.out['object']['copies_found']
+    def object_copies_missing(self):
+        return self.out['object']['copies_expected'] - self.out['object']['copies_found']
+    def object_overlapping(self):
+        return self.out['object']['overlapping']
+    def container_copies_expected(self):
+        return self.out['container']['copies_expected']
+    def container_copies_found(self):
+        return self.out['container']['copies_found']
+    def container_copies_missing(self):
+        return self.out['container']['copies_expected'] - self.out['container']['copies_found']
+    def container_overlapping(self):
+        return self.out['container']['overlapping']

@@ -14,40 +14,48 @@
 
 import json
 import logging
+import os
 import re
 import subprocess
 import time
-import types
+
+from swift_health_statsd.collector import Collector
 
 log = logging.getLogger(__name__)
 
-class SwiftRecon(checks.AgentCheck):
+class SwiftReconCollector(Collector):
+
+    def metric_name_prefix(self):
+        return "swift_cluster"
+
+    def logger(self):
+        return log
 
     GAUGES = [
-        "storage.used",
-        "storage.free",
-        "storage.capacity",
-        "md5.ring.matched",
-        "md5.ring.not_matched",
-        "md5.ring.errors",
-        "md5.ring.all",
-        "md5.swiftconf.matched",
-        "md5.swiftconf.not_matched",
-        "md5.swiftconf.errors",
-        "md5.swiftconf.all",
-        "containers.updater_sweep_time",
-        "objects.updater_sweep_time",
-        "objects.replication.duration",
-        "objects.replication.age",
-        "containers.replication.duration",
-        "containers.replication.age",
-        "accounts.replication.duration",
-        "accounts.replication.age",
-        "drives.audit.errors",
-        "drives.unmounted",
-        "objects.quarantined",
-        "containers.quarantined",
-        "accounts.quarantined",
+        "storage_used_bytes",
+        "storage_free_bytes",
+        "storage_capacity_bytes",
+        "md5_ring_matched",
+        "md5_ring_not_matched",
+        "md5_ring_errors",
+        "md5_ring_all",
+        "md5_swiftconf_matched",
+        "md5_swiftconf_not_matched",
+        "md5_swiftconf_errors",
+        "md5_swiftconf_all",
+        "containers_updater_sweep_time",
+        "objects_updater_sweep_time",
+        "objects_replication_duration",
+        "objects_replication_age",
+        "containers_replication_duration",
+        "containers_replication_age",
+        "accounts_replication_duration",
+        "accounts_replication_age",
+        "drives_audit_errors",
+        "drives_unmounted",
+        "objects_quarantined",
+        "containers_quarantined",
+        "accounts_quarantined",
     ]
 
     def prepare(self):
@@ -57,10 +65,7 @@ class SwiftRecon(checks.AgentCheck):
         self.quarantined_things = {}
 
     def swift_recon(self, *params):
-        executable = 'swift-recon'
-        if 'swift_recon' in self.init_config:
-            executable = self.init_config['swift_recon']
-
+        executable = os.getenv('SWIFT_RECON', 'swift-recon')
         cmd = " ".join((executable, " ".join(params)))
         pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                                 universal_newlines=True)
@@ -204,13 +209,13 @@ class SwiftRecon(checks.AgentCheck):
 
     # storage capacity
 
-    def storage_free(self):
+    def storage_free_bytes(self):
         return self.storage('free')
 
-    def storage_used(self):
+    def storage_used_bytes(self):
         return self.storage('used')
 
-    def storage_capacity(self):
+    def storage_capacity_bytes(self):
         return self.storage('capacity')
 
     # configuration consistency
@@ -283,40 +288,3 @@ class SwiftRecon(checks.AgentCheck):
 
     def accounts_quarantined(self):
         return self.quarantined("accounts")
-
-    ############################################################################
-    # collect metrics
-
-    def check(self, instance):
-        self.prepare()
-        dimensions = self._set_dimensions(None, instance)
-
-        for metric in self.GAUGES:
-            log.debug("Checking metric {0}".format(metric))
-
-            value = eval("self." + metric.replace(".", "_") + "()")
-
-            if metric.startswith('storage'):
-                metric = metric + '_bytes'
-            metric = self.normalize(metric.lower(), 'swift.cluster')
-
-            # value may be a dictionary with values by storage node...
-            if isinstance(value, dict):
-                for hostname in value:
-                    self.submit_gauge(metric, hostname, value[hostname], dimensions)
-            else:
-                self.submit_gauge(metric, None, value, dimensions)
-
-    def submit_gauge(self, metric, hostname, value, dimensions):
-        assert(type(value) in (types.IntType, types.LongType,
-                               types.FloatType))
-
-        if hostname:
-            dim = dimensions.copy()
-            dim["storage_node"] = hostname
-            log.debug("Sending {0}={1} for storage node {2}".format(metric, value, hostname))
-        else:
-            dim = dimensions
-            log.debug("Sending {0}={1}".format(metric, value))
-
-        self.gauge(metric, value, dimensions=dim)

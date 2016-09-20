@@ -12,7 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import six
+import logging
+import os
+
+from swift_health_statsd.dispersion import SwiftDispersionCollector
+from swift_health_statsd.recon      import SwiftReconCollector
 
 def main():
-    six.print_("Hello from swift-health-statsd")
+    log_level = os.getenv("LOG_LEVEL", "warn").upper()
+    logging.basicConfig(level=log_level)
+
+    for collector_class in [SwiftDispersionCollector, SwiftReconCollector]:
+        collector_class().run()
