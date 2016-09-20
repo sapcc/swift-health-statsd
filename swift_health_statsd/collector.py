@@ -39,12 +39,14 @@ class Collector(object):
         """
         raise NotImplementedError
 
-    def run(self):
-        """ Collect and return a dict with the values of all gauges. """
+    def run(self, statsd):
+        """ Collect and return a dict with the values of all gauges. Takes a
+            statsd.StatsClient instance.
+        """
         self.prepare()
         self.__log = self.logger()
         self.__metric_count = 0
-        # TODO: dimensions?
+        self.__statsd = statsd
 
         result = {}
         for metric in self.GAUGES:
@@ -70,4 +72,4 @@ class Collector(object):
         assert(type(value) in (types.IntType, types.LongType, types.FloatType))
         self.__log.debug("Sending {0}={1}".format(metric, value))
         self.__metric_count += 1
-        # TODO: actually do something
+        self.__statsd.gauge(metric, value)

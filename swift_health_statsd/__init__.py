@@ -15,6 +15,8 @@
 import logging
 import os
 
+from statsd import StatsClient
+
 from swift_health_statsd.dispersion import SwiftDispersionCollector
 from swift_health_statsd.recon      import SwiftReconCollector
 
@@ -22,5 +24,10 @@ def main():
     log_level = os.getenv("LOG_LEVEL", "warn").upper()
     logging.basicConfig(level=log_level)
 
+    statsd = StatsClient(
+        host = os.getenv("STATSD_HOST", "localhost"),
+        port = int(os.getenv("STATSD_PORT", "8125")),
+    )
+
     for collector_class in [SwiftDispersionCollector, SwiftReconCollector]:
-        collector_class().run()
+        collector_class().run(statsd)

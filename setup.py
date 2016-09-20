@@ -7,7 +7,7 @@ def read(fname):
 
 setuptools.setup(
     name             = "swift-health-statsd",
-    version          = "0.0.1",
+    version          = "0.1.0",
     author           = "Stefan Majewsky",
     author_email     = "stefan.majewsky@sap.com",
     description      = "Submit health data from swift-dispersion and swift-recon to a statsd endpoint",
@@ -16,7 +16,7 @@ setuptools.setup(
     long_description = read("README.md"),
     packages         = setuptools.find_packages(exclude=['contrib', 'docs', 'tests*']),
     classifiers      = [
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Environment :: OpenStack",
         "Intended Audience :: System Administrators",
         "License :: OSI Approved :: Apache Software License",
@@ -25,6 +25,6 @@ setuptools.setup(
         "Programming Language :: Python :: 2.7",
         "Topic :: System :: Monitoring",
     ],
-    install_requires = [ "six" ],
+    install_requires = [ "statsd >= 3.2" ],
     entry_points     = { 'console_scripts': [ 'swift-health-statsd=swift_health_statsd:main' ] },
 )
