@@ -66,7 +66,8 @@ class Collector(object):
             else:
                 self.__submit_gauge(metric, value)
 
-        self.__log.info("Submitted {} metrics".format(self.__metric_count))
+        self.__log.info("Submitted {} {} metrics"
+            .format(self.__metric_count, self.metric_name_prefix()))
 
     def __submit_gauge(self, metric, value):
         assert(type(value) in (types.IntType, types.LongType, types.FloatType))
