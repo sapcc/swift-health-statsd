@@ -82,6 +82,7 @@ class SwiftReconCollector(Collector):
         for line in output.splitlines():
             m = re.match(r'^-> https?://([a-zA-Z0-9-.]+)\S*\s(.*)', line)
             if m:
+                log.debug("Output from swift-recon {0}: {1}".format(" ".join(params), line))
                 hostname, json_str = m.group(1), m.group(2)
                 if not (json_str.startswith("{") or json_str.startswith("[")):
                     log.error("swift-recon {0} erroneous for node {1}: {2}".format(params, hostname, json_str))
