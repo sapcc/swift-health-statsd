@@ -93,6 +93,7 @@ class SwiftReconCollector(Collector):
                 json_str = json_str.replace("'", '"')
                 json_str = json_str.replace(": False", ": false")
                 json_str = json_str.replace(": True", ": true")
+                json_str = json_str.replace(": None", ": null")
                 result[hostname] = json.loads(json_str)
         return result
 
@@ -171,7 +172,12 @@ class SwiftReconCollector(Collector):
 
     def get_drive_audit_errors(self):
         data = self.swift_recon_json("--driveaudit")
-        return {hostname: data[hostname]['drive_audit_errors'] for hostname in data}
+        result = {hostname: data[hostname]['drive_audit_errors'] for hostname in data}
+        # for some reason, sometimes "None" is reported instead of "0"
+        for hostname in result:
+            if result[hostname] is None:
+                result[hostname] = 0
+        return result
 
     def get_quarantined(self):
         if not self.quarantined_things:

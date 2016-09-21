@@ -56,7 +56,7 @@ class SwiftDispersionCollector(Collector):
             out = out.split("\n", 1).pop()
 
         self.out = json.loads(out)
-        print("out = {}".format(self.out))
+        log.debug("output from swift-dispersion-report: {}".format(self.out))
 
     def object_copies_expected(self):
         return self.out['object']['copies_expected']
