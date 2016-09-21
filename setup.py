@@ -12,7 +12,7 @@ setuptools.setup(
     author_email     = "stefan.majewsky@sap.com",
     description      = "Submit health data from swift-dispersion and swift-recon to a statsd endpoint",
     license          = "Apache",
-    # url            = "",
+    url              = "https://github.com/sapcc/swift-health-statsd",
     long_description = read("README.md"),
     packages         = setuptools.find_packages(exclude=['contrib', 'docs', 'tests*']),
     classifiers      = [
