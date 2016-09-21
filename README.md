@@ -6,7 +6,11 @@ a StatsD endpoint.
 
 # Installation
 
-Like any other setuptools-based Python 2 program.
+Like any other setuptools-based Python 2 program, for example:
+
+```bash
+pip install git+https://github.com/sapcc/swift-health-statsd
+```
 
 # Usage
 
