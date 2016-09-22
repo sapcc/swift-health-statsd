@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
+import ast
 import logging
 import os
 import re
@@ -69,29 +69,23 @@ class SwiftReconCollector(Collector):
         cmd = " ".join((executable, " ".join(params)))
         return subprocess.check_output(cmd, shell=True, universal_newlines=True)
 
-    def swift_recon_json(self, *params):
+    def swift_recon_parse(self, *params):
         # call swift-recon in verbose mode
         output = self.swift_recon("-v", *params)
 
-        # look for verbose output containing the raw JSON documents received
+        # look for verbose output containing the raw data structures received
         # from the storage nodes
         result = {}
         for line in output.splitlines():
             m = re.match(r'^-> https?://([a-zA-Z0-9-.]+)\S*\s(.*)', line)
             if m:
                 log.debug("Output from swift-recon {0}: {1}".format(" ".join(params), line))
-                hostname, json_str = m.group(1), m.group(2)
-                if not (json_str.startswith("{") or json_str.startswith("[")):
-                    log.error("swift-recon {0} erroneous for node {1}: {2}".format(params, hostname, json_str))
+                hostname, data_str = m.group(1), m.group(2)
+                try:
+                    result[hostname] = ast.literal_eval(data_str)
+                except ValueError:
+                    log.error("swift-recon {0} erroneous for node {1}: {2}".format(params, hostname, data_str))
                     continue
-                # json_str is not actually JSON, but Python stringification of
-                # dict; beat it into submission
-                json_str = re.sub(r"u'(.+?)'", r'"\1"', json_str)
-                json_str = json_str.replace("'", '"')
-                json_str = json_str.replace(": False", ": false")
-                json_str = json_str.replace(": True", ": true")
-                json_str = json_str.replace(": None", ": null")
-                result[hostname] = json.loads(json_str)
         return result
 
     ############################################################################
@@ -138,7 +132,7 @@ class SwiftReconCollector(Collector):
         return self.md5
 
     def get_updater_sweeps(self, server_type):
-        data = self.swift_recon_json(server_type, "--updater")
+        data = self.swift_recon_parse(server_type, "--updater")
         key = server_type + "_updater_sweep"
         return {hostname: data[hostname][key] for hostname in data}
 
@@ -153,7 +147,7 @@ class SwiftReconCollector(Collector):
             duration_key, last_key = "replication_time", "replication_last"
 
         current_timestamp = time.time()
-        data = self.swift_recon_json(server_type, "--replication")
+        data = self.swift_recon_parse(server_type, "--replication")
         result = {"duration": {}, "age": {}}
         for hostname in data:
             result["duration"][hostname] = data[hostname][duration_key]
@@ -164,11 +158,11 @@ class SwiftReconCollector(Collector):
         return result
 
     def get_unmounted_drives(self):
-        data = self.swift_recon_json("--unmounted")
+        data = self.swift_recon_parse("--unmounted")
         return {hostname: len(data[hostname]) for hostname in data}
 
     def get_drive_audit_errors(self):
-        data = self.swift_recon_json("--driveaudit")
+        data = self.swift_recon_parse("--driveaudit")
         result = {hostname: data[hostname]['drive_audit_errors'] for hostname in data}
         # for some reason, sometimes "None" is reported instead of "0"
         for hostname in result:
@@ -178,7 +172,7 @@ class SwiftReconCollector(Collector):
 
     def get_quarantined(self):
         if not self.quarantined_things:
-            data = self.swift_recon_json("--quarantined")
+            data = self.swift_recon_parse("--quarantined")
             for hostname in data:
                 for key in data[hostname]:
                     self.quarantined_things.setdefault(key, {})[hostname] = data[hostname][key]
