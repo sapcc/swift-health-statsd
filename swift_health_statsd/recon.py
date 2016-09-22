@@ -67,10 +67,7 @@ class SwiftReconCollector(Collector):
     def swift_recon(self, *params):
         executable = os.getenv('SWIFT_RECON', 'swift-recon')
         cmd = " ".join((executable, " ".join(params)))
-        pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
-                                universal_newlines=True)
-        out = "".join(pipe.stdout.readlines())
-        return out
+        return subprocess.check_output(cmd, shell=True, universal_newlines=True)
 
     def swift_recon_json(self, *params):
         # call swift-recon in verbose mode

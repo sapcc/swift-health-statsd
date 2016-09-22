@@ -44,9 +44,7 @@ class SwiftDispersionCollector(Collector):
         executable = os.getenv('SWIFT_DISPERSION_REPORT', 'swift-dispersion-report')
 
         cmd = " ".join((executable, '-j'))
-        pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
-                                universal_newlines=True)
-        out = "".join(pipe.stdout.readlines())
+        out = subprocess.check_output(cmd, shell=True, universal_newlines=True)
 
         # swift-dispersion-report on Liberty prints an initial line "Using
         # storage policy: default", so look for the first line that contains
