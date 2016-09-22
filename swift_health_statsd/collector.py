@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import types
+import numbers
 
 class Collector(object):
     """ Subclasses of this implement collection of a certain type of metrics.
@@ -70,7 +70,7 @@ class Collector(object):
             .format(self.__metric_count, self.metric_name_prefix()))
 
     def __submit_gauge(self, metric, value):
-        assert(type(value) in (types.IntType, types.LongType, types.FloatType))
+        assert isinstance(value, numbers.Real)
         self.__log.debug("Sending {0} = {1}".format(metric, value))
         self.__metric_count += 1
         self.__statsd.gauge(metric, value)
