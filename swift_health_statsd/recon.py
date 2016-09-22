@@ -83,7 +83,7 @@ class SwiftReconCollector(Collector):
                 hostname, data_str = m.group(1), m.group(2)
                 try:
                     result[hostname] = ast.literal_eval(data_str)
-                except ValueError:
+                except (ValueError, SyntaxError):
                     log.error("swift-recon {0} erroneous for node {1}: {2}".format(params, hostname, data_str))
                     continue
         return result
