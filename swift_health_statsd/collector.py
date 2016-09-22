@@ -52,7 +52,7 @@ class Collector(object):
         for metric in self.GAUGES:
             self.__log.debug("Checking metric {0}".format(metric))
 
-            value  = eval("self." + metric + "()")
+            value = getattr(self, metric)()
             metric = "_".join([self.metric_name_prefix(), metric])
 
             # value may be a dictionary with values by storage node
@@ -71,6 +71,6 @@ class Collector(object):
 
     def __submit_gauge(self, metric, value):
         assert(type(value) in (types.IntType, types.LongType, types.FloatType))
-        self.__log.debug("Sending {0}={1}".format(metric, value))
+        self.__log.debug("Sending {0} = {1}".format(metric, value))
         self.__metric_count += 1
         self.__statsd.gauge(metric, value)
