@@ -86,6 +86,8 @@ class SwiftReconCollector(Collector):
                 except (ValueError, SyntaxError):
                     log.error("swift-recon {0} erroneous for node {1}: {2}".format(params, hostname, data_str))
                     continue
+        if not result:
+            log.error("swift-recon {0} did not return any usable output!".format(params))
         return result
 
     ############################################################################
@@ -104,6 +106,8 @@ class SwiftReconCollector(Collector):
                         self.diskusage['free'] = long(m.group(2))
                 else:
                     continue
+        if not self.diskusage:
+            log.error("swift-recon --diskusage did not return any usable output!")
         return self.diskusage
 
     def get_md5(self):

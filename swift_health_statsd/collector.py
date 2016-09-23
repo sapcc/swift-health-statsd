@@ -70,7 +70,7 @@ class Collector(object):
             .format(self.__metric_count, self.metric_name_prefix()))
 
     def __submit_gauge(self, metric, value):
-        assert isinstance(value, numbers.Real)
         self.__log.debug("Sending {0} = {1}".format(metric, value))
+        assert isinstance(value, numbers.Real)
         self.__metric_count += 1
         self.__statsd.gauge(metric, value)
