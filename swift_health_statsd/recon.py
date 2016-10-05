@@ -154,9 +154,10 @@ class SwiftReconCollector(Collector):
         data = self.swift_recon_parse(server_type, "--replication")
         result = {"duration": {}, "age": {}}
         for hostname in data:
-            result["duration"][hostname] = data[hostname][duration_key]
-            # convert timestamp of last completion into an age
-            result["age"][hostname] = current_timestamp - data[hostname][last_key]
+            if data[hostname][duration_key] is not None:
+                result["duration"][hostname] = data[hostname][duration_key]
+                # convert timestamp of last completion into an age
+                result["age"][hostname] = current_timestamp - data[hostname][last_key]
 
         self.replication_times[server_type] = result
         return result
@@ -167,12 +168,7 @@ class SwiftReconCollector(Collector):
 
     def get_drive_audit_errors(self):
         data = self.swift_recon_parse("--driveaudit")
-        result = {hostname: data[hostname]['drive_audit_errors'] for hostname in data}
-        # for some reason, sometimes "None" is reported instead of "0"
-        for hostname in result:
-            if result[hostname] is None:
-                result[hostname] = 0
-        return result
+        return {hostname: data[hostname]['drive_audit_errors'] for hostname in data}
 
     def get_quarantined(self):
         if not self.quarantined_things:

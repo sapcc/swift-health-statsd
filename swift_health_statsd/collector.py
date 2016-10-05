@@ -46,6 +46,7 @@ class Collector(object):
         self.prepare()
         self.__log = self.logger()
         self.__metric_count = 0
+        self.__skipped_count = 0
         self.__statsd = statsd
 
         result = {}
@@ -66,15 +67,17 @@ class Collector(object):
             else:
                 self.__submit_gauge(metric, value)
 
-        self.__log.info("Submitted {} {} metrics"
-            .format(self.__metric_count, self.metric_name_prefix()))
+        self.__log.info("Submitted {} {} metrics ({} skipped)"
+            .format(self.__metric_count,
+                    self.metric_name_prefix(),
+                    self.__skipped_count))
 
     def __submit_gauge(self, metric, value):
-        # sometimes swift-recon just throws None at us when it really means 0,
-        # but we should not crash over this (link is relevant:
-        # https://twitter.com/stefanmajewsky/status/778575829668421632)
+        # skip metric if no useful value was provided
         if value is None:
-            value = 0
+            self.__log.debug("Not sending {0} = None".format(metric))
+            self.__skipped_count += 1
+            return
 
         self.__log.debug("Sending {0} = {1}".format(metric, value))
         assert isinstance(value, numbers.Real)
