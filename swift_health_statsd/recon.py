@@ -35,6 +35,7 @@ class SwiftReconCollector(Collector):
         "storage_used_bytes",
         "storage_free_bytes",
         "storage_capacity_bytes",
+        "storage_used_percent",
         "md5_ring_matched",
         "md5_ring_not_matched",
         "md5_ring_errors",
@@ -215,6 +216,9 @@ class SwiftReconCollector(Collector):
 
     def storage_capacity_bytes(self):
         return self.storage('capacity')
+    
+    def storage_used_percent(self):
+        return self.storage('used') / self.storage('capacity')
 
     # configuration consistency
 
