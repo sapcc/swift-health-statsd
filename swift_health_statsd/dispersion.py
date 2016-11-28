@@ -15,8 +15,8 @@
 import json
 import logging
 import os
-import subprocess
 
+from swift_health_statsd.ipc import check_output
 from swift_health_statsd.collector import Collector
 
 log = logging.getLogger(__name__)
@@ -44,7 +44,7 @@ class SwiftDispersionCollector(Collector):
         executable = os.getenv('SWIFT_DISPERSION_REPORT', 'swift-dispersion-report')
 
         cmd = " ".join((executable, '-j'))
-        out = subprocess.check_output(cmd, shell=True, universal_newlines=True)
+        out = check_output(cmd, timeout=30)
 
         # swift-dispersion-report on Liberty prints an initial line "Using
         # storage policy: default", so look for the first line that contains

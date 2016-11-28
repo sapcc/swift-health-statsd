@@ -19,6 +19,7 @@ import re
 import subprocess
 import time
 
+from swift_health_statsd.ipc import check_output
 from swift_health_statsd.collector import Collector
 
 log = logging.getLogger(__name__)
@@ -68,7 +69,7 @@ class SwiftReconCollector(Collector):
     def swift_recon(self, *params):
         executable = os.getenv('SWIFT_RECON', 'swift-recon')
         cmd = " ".join((executable, " ".join(params)))
-        return subprocess.check_output(cmd, shell=True, universal_newlines=True)
+        return check_output(cmd, timeout=30)
 
     def swift_recon_parse(self, *params):
         # call swift-recon in verbose mode
