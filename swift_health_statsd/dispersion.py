@@ -56,19 +56,32 @@ class SwiftDispersionCollector(Collector):
         self.out = json.loads(out)
         log.debug("output from swift-dispersion-report: {}".format(self.out))
 
+    def get(self, level, metric):
+        return self.out.get(level, {}).get(metric, None)
+
     def object_copies_expected(self):
-        return self.out['object']['copies_expected']
+        return self.get('object', 'copies_expected')
     def object_copies_found(self):
-        return self.out['object']['copies_found']
+        return self.get('object', 'copies_found')
     def object_copies_missing(self):
-        return self.out['object']['copies_expected'] - self.out['object']['copies_found']
+        expected = self.get('object', 'copies_expected')
+        found    = self.get('object', 'copies_found')
+        if expected is None or found is None:
+            return None
+        else:
+            return expected - found
     def object_overlapping(self):
-        return self.out['object']['overlapping']
+        return self.get('object', 'overlapping')
     def container_copies_expected(self):
-        return self.out['container']['copies_expected']
+        return self.get('container', 'copies_expected')
     def container_copies_found(self):
-        return self.out['container']['copies_found']
+        return self.get('container', 'copies_found')
     def container_copies_missing(self):
-        return self.out['container']['copies_expected'] - self.out['container']['copies_found']
+        expected = self.get('container', 'copies_expected')
+        found    = self.get('container', 'copies_found')
+        if expected is None or found is None:
+            return None
+        else:
+            return expected - found
     def container_overlapping(self):
-        return self.out['container']['overlapping']
+        return self.get('container', 'overlapping')
