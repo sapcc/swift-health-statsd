@@ -26,3 +26,18 @@ virtualenv, from the virtualenv's `bin` directory. The following environment var
 | `STATSD_PORT` | `8125` | Port where statsd is running. |
 | `SWIFT_RECON` | `swift-recon` | Path to the `swift-recon` executable. |
 | `SWIFT_DISPERSION_REPORT` | `swift-dispersion-report` | Path to the `swift-dispersion-report` executable. |
+| `ADD_HOSTNAME_SUFFIX` | `false` | If `true`, add a suffix to each metric name that identifies the storage server from which the metric originated. |
+
+`ADD_HOSTNAME_SUFFIX` is useful when the receiver would otherwise only observe the last value for each metric. Here's how metric names are formatted:
+
+```
+# example log output with ADD_HOSTNAME_SUFFIX=false (default)
+DEBUG:swift_health_statsd.recon:Sending swift_cluster.drives_audit_errors = 0
+DEBUG:swift_health_statsd.recon:Sending swift_cluster.drives_audit_errors = 2
+DEBUG:swift_health_statsd.recon:Sending swift_cluster.drives_audit_errors = 0
+
+# example log output with ADD_HOSTNAME_SUFFIX=true
+DEBUG:swift_health_statsd.recon:Sending swift_cluster.drives_audit_errors.from.192.168.0.1 = 0
+DEBUG:swift_health_statsd.recon:Sending swift_cluster.drives_audit_errors.from.192.168.0.2 = 2
+DEBUG:swift_health_statsd.recon:Sending swift_cluster.drives_audit_errors.from.192.168.0.3 = 0
+```

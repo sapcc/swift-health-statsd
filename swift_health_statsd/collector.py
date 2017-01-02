@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import numbers
+import os
 
 class Collector(object):
     """ Subclasses of this implement collection of a certain type of metrics.
@@ -48,22 +49,28 @@ class Collector(object):
         self.__metric_count = 0
         self.__skipped_count = 0
         self.__statsd = statsd
+        with_hostnames = os.getenv('ADD_HOSTNAME_SUFFIX', 'false') == 'true'
 
         result = {}
         for metric in self.GAUGES:
             self.__log.debug("Checking metric {0}".format(metric))
 
             value = getattr(self, metric)()
-            metric = "_".join([self.metric_name_prefix(), metric])
+            metric = ".".join([self.metric_name_prefix(), metric])
 
             # value may be a dictionary with values by storage node
             if isinstance(value, dict):
                 # since StatsD has no concept of labels (like in Prometheus) or
                 # dimensions (like in Monasca), we just discard the hostname
                 # here and submit the values individually, so that max/min/avg
-                # will still work as expected
+                # will still work as expected...
                 for hostname in value:
-                    self.__submit_gauge(metric, value[hostname])
+                    # ...unless the caller advised us to include the hostname
+                    # in the label name
+                    this_metric = metric
+                    if with_hostnames:
+                        this_metric = "{}.from.{}".format(metric, hostname)
+                    self.__submit_gauge(this_metric, value[hostname])
             else:
                 self.__submit_gauge(metric, value)
 
