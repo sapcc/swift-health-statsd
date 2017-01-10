@@ -27,4 +27,6 @@ setuptools.setup(
     ],
     install_requires = [ "statsd >= 3.2" ],
     entry_points     = { 'console_scripts': [ 'swift-health-statsd=swift_health_statsd:main' ] },
+    setup_requires   = [ "pytest-runner" ],
+    tests_require    = [ "pytest" ],
 )

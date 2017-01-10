@@ -14,6 +14,13 @@ pip install git+https://github.com/sapcc/swift-health-statsd
 
 Python 3 might also work, but has not been tested. (Feedback is appreciated.)
 
+For development, setup a virtualenv and install into there:
+
+```bash
+pip install -e .
+python setup.py test
+```
+
 # Usage
 
 Run the `swift-health-statsd` program from your `$PATH` or, if installed into a
