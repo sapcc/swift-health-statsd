@@ -1,0 +1,49 @@
+===============================================================================
+--> Starting reconnaissance on 9 hosts
+===============================================================================
+[2017-01-10 14:10:44] Checking ring md5sums
+-> On disk container.ring.gz md5sum: 534a76aabd4202a7b7062224d57c1cdd
+-> On disk object.ring.gz md5sum: 355e381979fee90b50e2ba6eb5774b9a
+-> On disk account.ring.gz md5sum: bd50986039bfd3604a4cb2d42170ed25
+-> http://10.0.0.5:6000/recon/ringmd5: {u'/etc/swift/object.ring.gz': u'355e381979fee90b50e2ba6eb5774b9a', u'/etc/swift/account.ring.gz': u'bd50986039bfd3604a4cb2d42170ed25', u'/etc/swift/container.ring.gz': u'534a76aabd4202a7b7062224d57c1cdd'}
+-> http://10.0.0.4:6000/recon/ringmd5: {u'/etc/swift/object.ring.gz': u'355e381979fee90b50e2ba6eb5774b9a', u'/etc/swift/account.ring.gz': u'bd50986039bfd3604a4cb2d42170ed25', u'/etc/swift/container.ring.gz': u'534a76aabd4202a7b7062224d57c1cdd'}
+-> http://10.0.0.7:6000/recon/ringmd5: {u'/etc/swift/object.ring.gz': u'355e381979fee90b50e2ba6eb5774b9a', u'/etc/swift/account.ring.gz': u'bd50986039bfd3604a4cb2d42170ed25', u'/etc/swift/container.ring.gz': u'534a76aabd4202a7b7062224d57c1cdd'}
+-> http://10.0.0.2:6000/recon/ringmd5: {u'/etc/swift/object.ring.gz': u'355e381979fee90b50e2ba6eb5774b9a', u'/etc/swift/account.ring.gz': u'bd50986039bfd3604a4cb2d42170ed25', u'/etc/swift/container.ring.gz': u'534a76aabd4202a7b7062224d57c1cdd'}
+-> http://10.0.0.1:6000/recon/ringmd5: {u'/etc/swift/object.ring.gz': u'355e381979fee90b50e2ba6eb5774b9a', u'/etc/swift/account.ring.gz': u'bd50986039bfd3604a4cb2d42170ed25', u'/etc/swift/container.ring.gz': u'534a76aabd4202a7b7062224d57c1cdd'}
+-> http://10.0.0.3:6000/recon/ringmd5: {u'/etc/swift/object.ring.gz': u'355e381979fee90b50e2ba6eb5774b9a', u'/etc/swift/account.ring.gz': u'bd50986039bfd3604a4cb2d42170ed25', u'/etc/swift/container.ring.gz': u'534a76aabd4202a7b7062224d57c1cdd'}
+-> http://10.0.0.6:6000/recon/ringmd5: {u'/etc/swift/object.ring.gz': u'355e381979fee90b50e2ba6eb5774b9a', u'/etc/swift/account.ring.gz': u'bd50986039bfd3604a4cb2d42170ed25', u'/etc/swift/container.ring.gz': u'534a76aabd4202a7b7062224d57c1cdd'}
+-> http://10.0.0.8:6000/recon/ringmd5: {u'/etc/swift/object.ring.gz': u'355e381979fee90b50e2ba6eb5774b9a', u'/etc/swift/account.ring.gz': u'bd50986039bfd3604a4cb2d42170ed25', u'/etc/swift/container.ring.gz': u'534a76aabd4202a7b7062224d57c1cdd'}
+-> http://10.0.0.9:6000/recon/ringmd5: {u'/etc/swift/object.ring.gz': u'355e381979fee90b50e2ba6eb5774b9a', u'/etc/swift/account.ring.gz': u'bd50986039bfd3604a4cb2d42170ed25', u'/etc/swift/container.ring.gz': u'534a76aabd4202a7b7062224d57c1cdd'}
+-> http://10.0.0.9:6000/recon/ringmd5 matches.
+-> http://10.0.0.4:6000/recon/ringmd5 matches.
+-> http://10.0.0.2:6000/recon/ringmd5 matches.
+-> http://10.0.0.7:6000/recon/ringmd5 matches.
+-> http://10.0.0.5:6000/recon/ringmd5 matches.
+-> http://10.0.0.1:6000/recon/ringmd5 matches.
+-> http://10.0.0.3:6000/recon/ringmd5 matches.
+-> http://10.0.0.8:6000/recon/ringmd5 matches.
+-> http://10.0.0.6:6000/recon/ringmd5 matches.
+9/9 hosts matched, 0 error[s] while checking hosts.
+===============================================================================
+[2017-01-10 14:10:44] Checking swift.conf md5sum
+-> On disk swift.conf md5sum: 4d60a574c57e8cfd37c6eb56cfd92405
+-> http://10.0.0.4:6000/recon/swiftconfmd5: {u'/etc/swift/swift.conf': u'4d60a574c57e8cfd37c6eb56cfd92405'}
+-> http://10.0.0.1:6000/recon/swiftconfmd5: {u'/etc/swift/swift.conf': u'4d60a574c57e8cfd37c6eb56cfd92405'}
+-> http://10.0.0.2:6000/recon/swiftconfmd5: {u'/etc/swift/swift.conf': u'4d60a574c57e8cfd37c6eb56cfd92405'}
+-> http://10.0.0.7:6000/recon/swiftconfmd5: {u'/etc/swift/swift.conf': u'4d60a574c57e8cfd37c6eb56cfd92405'}
+-> http://10.0.0.3:6000/recon/swiftconfmd5: {u'/etc/swift/swift.conf': u'4d60a574c57e8cfd37c6eb56cfd92405'}
+-> http://10.0.0.5:6000/recon/swiftconfmd5: {u'/etc/swift/swift.conf': u'4d60a574c57e8cfd37c6eb56cfd92405'}
+-> http://10.0.0.6:6000/recon/swiftconfmd5: {u'/etc/swift/swift.conf': u'4d60a574c57e8cfd37c6eb56cfd92405'}
+-> http://10.0.0.8:6000/recon/swiftconfmd5: {u'/etc/swift/swift.conf': u'4d60a574c57e8cfd37c6eb56cfd92405'}
+-> http://10.0.0.9:6000/recon/swiftconfmd5: {u'/etc/swift/swift.conf': u'4d60a574c57e8cfd37c6eb56cfd92405'}
+-> http://10.0.0.9:6000/recon/swiftconfmd5 matches.
+-> http://10.0.0.4:6000/recon/swiftconfmd5 matches.
+-> http://10.0.0.2:6000/recon/swiftconfmd5 matches.
+-> http://10.0.0.7:6000/recon/swiftconfmd5 matches.
+-> http://10.0.0.5:6000/recon/swiftconfmd5 matches.
+-> http://10.0.0.1:6000/recon/swiftconfmd5 matches.
+-> http://10.0.0.3:6000/recon/swiftconfmd5 matches.
+-> http://10.0.0.8:6000/recon/swiftconfmd5 matches.
+-> http://10.0.0.6:6000/recon/swiftconfmd5 matches.
+9/9 hosts matched, 0 error[s] while checking hosts.
+===============================================================================

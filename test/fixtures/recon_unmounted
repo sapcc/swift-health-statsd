@@ -1,0 +1,15 @@
+===============================================================================
+--> Starting reconnaissance on 9 hosts
+===============================================================================
+[2017-01-10 14:10:53] Getting unmounted drives from 9 hosts...
+-> http://10.0.0.1:6000/recon/unmounted: []
+-> http://10.0.0.2:6000/recon/unmounted: []
+-> http://10.0.0.5:6000/recon/unmounted: []
+-> http://10.0.0.6:6000/recon/unmounted: []
+-> http://10.0.0.3:6000/recon/unmounted: []
+-> http://10.0.0.4:6000/recon/unmounted: []
+-> http://10.0.0.7:6000/recon/unmounted: [{u'device': u'sdb', u'mounted': False}]
+-> http://10.0.0.8:6000/recon/unmounted: []
+-> http://10.0.0.9:6000/recon/unmounted: []
+Not mounted: sdb on 10.0.0.7:6000
+===============================================================================

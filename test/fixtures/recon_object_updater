@@ -1,0 +1,15 @@
+===============================================================================
+--> Starting reconnaissance on 9 hosts
+===============================================================================
+[2017-01-10 14:10:46] Checking updater times
+-> http://10.0.0.1:6000/recon/updater/object: {u'object_updater_sweep': 0.1995248794555664}
+-> http://10.0.0.3:6000/recon/updater/object: {u'object_updater_sweep': 0.18461108207702637}
+-> http://10.0.0.4:6000/recon/updater/object: {u'object_updater_sweep': 0.19096088409423828}
+-> http://10.0.0.2:6000/recon/updater/object: {u'object_updater_sweep': 0.17919588088989258}
+-> http://10.0.0.5:6000/recon/updater/object: {u'object_updater_sweep': 0.19083690643310547}
+-> http://10.0.0.7:6000/recon/updater/object: {u'object_updater_sweep': 0.18849611282348633}
+-> http://10.0.0.6:6000/recon/updater/object: {u'object_updater_sweep': 0.1859149932861328}
+-> http://10.0.0.8:6000/recon/updater/object: {u'object_updater_sweep': 0.4458739757537842}
+-> http://10.0.0.9:6000/recon/updater/object: {u'object_updater_sweep': 1.4423089027404785}
+[updater_last_sweep] low: 0, high: 1, avg: 0.4, total: 3, Failed: 0.0%, no_result: 0, reported: 9
+===============================================================================

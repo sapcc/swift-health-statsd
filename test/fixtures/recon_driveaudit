@@ -1,0 +1,15 @@
+===============================================================================
+--> Starting reconnaissance on 9 hosts
+===============================================================================
+[2017-01-10 14:10:54] Checking drive-audit errors
+-> http://10.0.0.1:6000/recon/driveaudit: {u'drive_audit_errors': 0}
+-> http://10.0.0.2:6000/recon/driveaudit: {u'drive_audit_errors': 0}
+-> http://10.0.0.4:6000/recon/driveaudit: {u'drive_audit_errors': 0}
+-> http://10.0.0.5:6000/recon/driveaudit: {u'drive_audit_errors': 0}
+-> http://10.0.0.6:6000/recon/driveaudit: {u'drive_audit_errors': 0}
+-> http://10.0.0.7:6000/recon/driveaudit: {u'drive_audit_errors': 1}
+-> http://10.0.0.8:6000/recon/driveaudit: {u'drive_audit_errors': 0}
+-> http://10.0.0.3:6000/recon/driveaudit: {u'drive_audit_errors': 0}
+-> http://10.0.0.9:6000/recon/driveaudit: {u'drive_audit_errors': 0}
+[drive_audit_errors] low: 0, high: 1, avg: 0.1, total: 0, Failed: 0.0%, no_result: 0, reported: 9
+===============================================================================

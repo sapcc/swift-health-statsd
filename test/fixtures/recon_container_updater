@@ -1,0 +1,15 @@
+===============================================================================
+--> Starting reconnaissance on 9 hosts
+===============================================================================
+[2017-01-10 14:10:48] Checking updater times
+-> http://10.0.0.5:6001/recon/updater/container: {u'container_updater_sweep': 3.1556501388549805}
+-> http://10.0.0.1:6001/recon/updater/container: {u'container_updater_sweep': 3.276121139526367}
+-> http://10.0.0.4:6001/recon/updater/container: {u'container_updater_sweep': 3.258327007293701}
+-> http://10.0.0.8:6001/recon/updater/container: {u'container_updater_sweep': 5.448167085647583}
+-> http://10.0.0.2:6001/recon/updater/container: {u'container_updater_sweep': 3.072524070739746}
+-> http://10.0.0.3:6001/recon/updater/container: {u'container_updater_sweep': 3.0345959663391113}
+-> http://10.0.0.7:6001/recon/updater/container: {u'container_updater_sweep': 3.0257790088653564}
+-> http://10.0.0.6:6001/recon/updater/container: {u'container_updater_sweep': 3.089754819869995}
+-> http://10.0.0.9:6001/recon/updater/container: {u'container_updater_sweep': 15.271306037902832}
+[updater_last_sweep] low: 3, high: 15, avg: 4.7, total: 42, Failed: 0.0%, no_result: 0, reported: 9
+===============================================================================

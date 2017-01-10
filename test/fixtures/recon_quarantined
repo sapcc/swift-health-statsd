@@ -1,0 +1,17 @@
+===============================================================================
+--> Starting reconnaissance on 9 hosts
+===============================================================================
+[2017-01-10 14:10:55] Checking quarantine
+-> http://10.0.0.1:6000/recon/quarantined: {u'objects': 0, u'accounts': 0, u'containers': 0, u'policies': {}}
+-> http://10.0.0.3:6000/recon/quarantined: {u'objects': 0, u'accounts': 0, u'containers': 0, u'policies': {}}
+-> http://10.0.0.2:6000/recon/quarantined: {u'objects': 0, u'accounts': 0, u'containers': 0, u'policies': {}}
+-> http://10.0.0.7:6000/recon/quarantined: {u'objects': 0, u'accounts': 0, u'containers': 0, u'policies': {}}
+-> http://10.0.0.5:6000/recon/quarantined: {u'objects': 0, u'accounts': 0, u'containers': 0, u'policies': {}}
+-> http://10.0.0.4:6000/recon/quarantined: {u'objects': 0, u'accounts': 0, u'containers': 0, u'policies': {}}
+-> http://10.0.0.6:6000/recon/quarantined: {u'objects': 0, u'accounts': 0, u'containers': 0, u'policies': {}}
+-> http://10.0.0.8:6000/recon/quarantined: {u'objects': 0, u'accounts': 0, u'containers': 0, u'policies': {}}
+-> http://10.0.0.9:6000/recon/quarantined: {u'objects': 0, u'accounts': 0, u'containers': 0, u'policies': {}}
+[quarantined_objects] low: 0, high: 0, avg: 0.0, total: 0, Failed: 0.0%, no_result: 0, reported: 9
+[quarantined_accounts] low: 0, high: 0, avg: 0.0, total: 0, Failed: 0.0%, no_result: 0, reported: 9
+[quarantined_containers] low: 0, high: 0, avg: 0.0, total: 0, Failed: 0.0%, no_result: 0, reported: 9
+===============================================================================
