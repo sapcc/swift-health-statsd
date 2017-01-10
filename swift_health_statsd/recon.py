@@ -14,7 +14,6 @@
 
 import ast
 import logging
-import os
 import re
 import subprocess
 import time
@@ -67,8 +66,7 @@ class SwiftReconCollector(Collector):
         self.quarantined_things = {}
 
     def swift_recon(self, *params):
-        executable = os.getenv('SWIFT_RECON', 'swift-recon')
-        cmd = " ".join((executable, " ".join(params)))
+        cmd = " ".join((self.config.recon_path, " ".join(params)))
         return check_output(cmd, timeout=30)
 
     def swift_recon_parse(self, *params):

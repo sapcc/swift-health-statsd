@@ -14,7 +14,6 @@
 
 import json
 import logging
-import os
 
 from swift_health_statsd.ipc import check_output
 from swift_health_statsd.collector import Collector
@@ -41,9 +40,7 @@ class SwiftDispersionCollector(Collector):
     ]
 
     def prepare(self):
-        executable = os.getenv('SWIFT_DISPERSION_REPORT', 'swift-dispersion-report')
-
-        cmd = " ".join((executable, '-j'))
+        cmd = " ".join((self.config.dispersion_report_path, '-j'))
         out = check_output(cmd, timeout=30)
 
         # swift-dispersion-report on Liberty prints an initial line "Using

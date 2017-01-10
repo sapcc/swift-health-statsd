@@ -13,7 +13,27 @@
 # limitations under the License.
 
 import numbers
-import os
+
+class CollectorConfig(object):
+    """ Helper class for the Collector class that contains its configuration
+        options. This is usually initialized from os.getenv(), unless
+        we're inside a unit test.
+    """
+
+    def __init__(self, **kwargs):
+        """ Initializer. Initializes the following fields from kwargs:
+
+            add_hostname_suffix (boolean)
+            recon_path          (string)
+            dispersion_path     (string)
+
+            The semantics of these fields are equivalent to the environment
+            variables noted in the README.md
+        """
+        self.add_hostname_suffix = kwargs.get("add_hostname_suffix", False)
+        self.recon_path = kwargs.get("recon_path", "swift-recon")
+        self.dispersion_report_path = kwargs.get("dispersion_report_path",
+            "swift-dispersion-report")
 
 class Collector(object):
     """ Subclasses of this implement collection of a certain type of metrics.
@@ -23,6 +43,10 @@ class Collector(object):
         * implement methods for each gauge (with method name = metric name)
           that return the current value of the gauge
     """
+
+    def __init__(self, config):
+        """ Initializer. Takes a CollectorConfig instance. """
+        self.config = config
 
     def prepare(self):
         """ Can be overridden by subclass to perform setup at the start of a
@@ -49,7 +73,6 @@ class Collector(object):
         self.__metric_count = 0
         self.__skipped_count = 0
         self.__statsd = statsd
-        with_hostnames = os.getenv('ADD_HOSTNAME_SUFFIX', 'false') == 'true'
 
         result = {}
         for metric in self.GAUGES:
@@ -68,7 +91,7 @@ class Collector(object):
                     # ...unless the caller advised us to include the hostname
                     # in the label name
                     this_metric = metric
-                    if with_hostnames:
+                    if self.config.add_hostname_suffix:
                         this_metric = "{}.from.{}".format(metric, hostname)
                     self.__submit_gauge(this_metric, value[hostname])
             else:
