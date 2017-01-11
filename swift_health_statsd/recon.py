@@ -73,23 +73,32 @@ class SwiftReconCollector(Collector):
 
     def __collect_diskusage(self):
         """ Parser for `swift-recon --diskusage`. """
-        data = {}
-        for line in self.swift_recon("--diskusage").splitlines():
-            m = re.match(r'Disk usage: space (\w+): (\d+) of (\d+)', line)
-            if m:
-                if m.group(1) == 'used':
-                    data['used'] = long(m.group(2))
-                    data['capacity'] = long(m.group(3))
-                    data['used_percent'] = float(data['used']) / data['capacity']
-                elif m.group(1) == 'free':
-                    data['free'] = long(m.group(2))
-            else:
-                continue
+        total_free = 0
+        total_used = 0
+        total_size = 0
 
-        self.submit('storage_free_bytes',     data.get('free'))
-        self.submit('storage_used_bytes',     data.get('used'))
-        self.submit('storage_capacity_bytes', data.get('capacity'))
-        self.submit('storage_used_percent',   data.get('used_percent'))
+        data = self.swift_recon_parse("--diskusage")
+        for hostname in data:
+            for disk in data[hostname]:
+                if not disk['mounted']:
+                    continue
+                total_free += disk['avail']
+                total_used += disk['used']
+                total_size += disk['size']
+
+                # submit metrics by disk (only used_percent here, which is the
+                # most useful for alerting; otherwise we flood statsd with
+                # hundreds of metrics)
+                device = re.sub(r"[^a-zA-Z0-9]+", "", disk['device'])
+                self.submit('storage_used_percent.disk.' + device,
+                    float(disk['used']) / float(disk['size']), hostname)
+
+        # submit summary metrics
+        self.submit('storage_free_bytes',     total_free)
+        self.submit('storage_used_bytes',     total_used)
+        self.submit('storage_capacity_bytes', total_size)
+        self.submit('storage_used_percent',
+            float(total_used) / float(total_size))
 
     def __collect_md5(self):
         """ Parser for `swift-recon --md5`. """
