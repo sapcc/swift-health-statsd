@@ -28,18 +28,7 @@ class SwiftDispersionCollector(Collector):
     def logger(self):
         return log
 
-    GAUGES = [
-        "object_copies_expected",
-        "object_copies_found",
-        "object_copies_missing",
-        "object_overlapping",
-        "container_copies_expected",
-        "container_copies_found",
-        "container_copies_missing",
-        "container_overlapping",
-    ]
-
-    def prepare(self):
+    def collect(self):
         cmd = " ".join((self.config.dispersion_report_path, '-j'))
         out = check_output(cmd, timeout=30)
 
@@ -50,35 +39,19 @@ class SwiftDispersionCollector(Collector):
             # remove first line
             out = out.split("\n", 1).pop()
 
-        self.out = json.loads(out)
-        log.debug("output from swift-dispersion-report: {}".format(self.out))
+        data = json.loads(out)
 
-    def get(self, level, metric):
-        return self.out.get(level, {}).get(metric, None)
+        for server in ['object', 'container']:
+            counts   = data.get(server, {})
+            expected = counts.get('copies_expected')
+            found    = counts.get('copies_found')
 
-    def object_copies_expected(self):
-        return self.get('object', 'copies_expected')
-    def object_copies_found(self):
-        return self.get('object', 'copies_found')
-    def object_copies_missing(self):
-        expected = self.get('object', 'copies_expected')
-        found    = self.get('object', 'copies_found')
-        if expected is None or found is None:
-            return None
-        else:
-            return expected - found
-    def object_overlapping(self):
-        return self.get('object', 'overlapping')
-    def container_copies_expected(self):
-        return self.get('container', 'copies_expected')
-    def container_copies_found(self):
-        return self.get('container', 'copies_found')
-    def container_copies_missing(self):
-        expected = self.get('container', 'copies_expected')
-        found    = self.get('container', 'copies_found')
-        if expected is None or found is None:
-            return None
-        else:
-            return expected - found
-    def container_overlapping(self):
-        return self.get('container', 'overlapping')
+            if expected is None or found is None:
+                missing = None
+            else:
+                missing = expected - found
+
+            self.submit(server + '_copies_expected', expected)
+            self.submit(server + '_copies_found',    found)
+            self.submit(server + '_copies_missing',  missing)
+            self.submit(server + '_overlapping', counts.get('overlapping'))

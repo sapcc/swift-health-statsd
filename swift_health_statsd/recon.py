@@ -59,6 +59,9 @@ class SwiftReconCollector(Collector):
         "accounts_quarantined",
     ]
 
+    def collect(self):
+        pass # TODO
+
     def prepare(self):
         self.diskusage = {}
         self.md5 = {}

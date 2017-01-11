@@ -38,15 +38,19 @@ class CollectorConfig(object):
 class Collector(object):
     """ Subclasses of this implement collection of a certain type of metrics.
         Subclasses must:
-        * implement logger(), metric_name_prefix() and optionally prepare()
-        * have an array GAUGES containing valid StatsD metric names
-        * implement methods for each gauge (with method name = metric name)
-          that return the current value of the gauge
+        * implement logger(), metric_name_prefix(), collect() and optionally
+          prepare()
     """
 
     def __init__(self, config):
         """ Initializer. Takes a CollectorConfig instance. """
         self.config = config
+
+    def collect(self):
+        """ Must be overridden by subclass to collect metrics, and submit them
+            by calling submit() for each metric.
+        """
+        raise NotImplementedError
 
     def prepare(self):
         """ Can be overridden by subclass to perform setup at the start of a
@@ -74,42 +78,43 @@ class Collector(object):
         self.__skipped_count = 0
         self.__statsd = statsd
 
-        result = {}
-        for metric in self.GAUGES:
-            self.__log.debug("Checking metric {0}".format(metric))
+        self.collect()
 
-            value = getattr(self, metric)()
-            metric = ".".join([self.metric_name_prefix(), metric])
-
-            # value may be a dictionary with values by storage node
-            if isinstance(value, dict):
-                # since StatsD has no concept of labels (like in Prometheus) or
-                # dimensions (like in Monasca), we just discard the hostname
-                # here and submit the values individually, so that max/min/avg
-                # will still work as expected...
-                for hostname in value:
-                    # ...unless the caller advised us to include the hostname
-                    # in the label name
-                    this_metric = metric
-                    if self.config.add_hostname_suffix:
-                        this_metric = "{}.from.{}".format(metric, hostname)
-                    self.__submit_gauge(this_metric, value[hostname])
-            else:
-                self.__submit_gauge(metric, value)
+        if "GAUGES" in type(self).__dict__:
+            for metric in self.GAUGES:
+                self.__log.debug("Checking metric {0}".format(metric))
+                value = getattr(self, metric)()
+                # value may be a dictionary with values by storage node
+                if isinstance(value, dict):
+                    for hostname in value:
+                        self.submit(metric, value[hostname], hostname)
+                else:
+                    self.submit(metric, value)
 
         self.__log.info("Submitted {} {} metrics ({} skipped)"
             .format(self.__metric_count,
                     self.metric_name_prefix(),
                     self.__skipped_count))
 
-    def __submit_gauge(self, metric, value):
+    def submit(self, metric, value, hostname=None):
+        """ Call this from collect() to submit a metric value. """
+        # since StatsD has no concept of labels (like in Prometheus) or
+        # dimensions (like in Monasca), we just discard the hostname
+        # here and submit the values individually, so that max/min/avg
+        # will still work as expected...
+        this_metric = "{}.{}".format(self.metric_name_prefix(), metric)
+        if hostname is not None and self.config.add_hostname_suffix:
+            # ...unless the caller advised us to include the hostname
+            # in the label name
+            this_metric = "{}.from.{}".format(this_metric, hostname)
+
         # skip metric if no useful value was provided
         if value is None:
-            self.__log.debug("Not sending {0} = None".format(metric))
+            self.__log.debug("Not sending {0} = None".format(this_metric))
             self.__skipped_count += 1
             return
 
-        self.__log.debug("Sending {0} = {1}".format(metric, value))
+        self.__log.debug("Sending {0} = {1}".format(this_metric, value))
         assert isinstance(value, numbers.Real)
         self.__metric_count += 1
-        self.__statsd.gauge(metric, value)
+        self.__statsd.gauge(this_metric, value)
