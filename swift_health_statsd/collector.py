@@ -52,12 +52,6 @@ class Collector(object):
         """
         raise NotImplementedError
 
-    def prepare(self):
-        """ Can be overridden by subclass to perform setup at the start of a
-            check() run.
-        """
-        pass
-
     def logger(self):
         """ Must be overridden by subclass to return its logger instance. """
         raise NotImplementedError
@@ -72,24 +66,12 @@ class Collector(object):
         """ Collect and return a dict with the values of all gauges. Takes a
             statsd.StatsClient instance.
         """
-        self.prepare()
         self.__log = self.logger()
         self.__metric_count = 0
         self.__skipped_count = 0
         self.__statsd = statsd
 
         self.collect()
-
-        if "GAUGES" in type(self).__dict__:
-            for metric in self.GAUGES:
-                self.__log.debug("Checking metric {0}".format(metric))
-                value = getattr(self, metric)()
-                # value may be a dictionary with values by storage node
-                if isinstance(value, dict):
-                    for hostname in value:
-                        self.submit(metric, value[hostname], hostname)
-                else:
-                    self.submit(metric, value)
 
         self.__log.info("Submitted {} {} metrics ({} skipped)"
             .format(self.__metric_count,
