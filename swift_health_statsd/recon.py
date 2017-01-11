@@ -91,6 +91,39 @@ class SwiftReconCollector(Collector):
         self.submit('storage_capacity_bytes', data.get('capacity'))
         self.submit('storage_used_percent',   data.get('used_percent'))
 
+    def __collect_diskusage(self):
+        """ Parser for `swift-recon --diskusage`. """
+        total_free = 0
+        total_used = 0
+        total_size = 0
+
+        data = self.swift_recon_parse("--diskusage")
+        for hostname in data:
+            for disk in data[hostname]:
+                if not disk['mounted']:
+                    continue
+                total_free += disk['avail']
+                total_used += disk['used']
+                total_size += disk['size']
+
+                # submit metrics by disk
+                device = re.sub(r"[^a-zA-Z0-9]+", "", disk['device'])
+                self.submit('storage_free_bytes.disk.' + device,
+                    disk['avail'], hostname)
+                self.submit('storage_used_bytes.disk.' + device,
+                    disk['used'], hostname)
+                self.submit('storage_capacity_bytes.disk.' + device,
+                    disk['size'], hostname)
+                self.submit('storage_used_percent.disk.' + device,
+                    float(disk['used']) / float(disk['size']), hostname)
+
+        # submit summary metrics
+        self.submit('storage_free_bytes',     total_free)
+        self.submit('storage_used_bytes',     total_used)
+        self.submit('storage_capacity_bytes', total_size)
+        self.submit('storage_used_percent',
+            float(total_used) / float(total_size))
+
     def __collect_md5(self):
         """ Parser for `swift-recon --md5`. """
         data = {}
