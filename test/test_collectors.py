@@ -16,7 +16,7 @@ from swift_health_statsd.collector  import CollectorConfig
 from swift_health_statsd.recon      import SwiftReconCollector
 from swift_health_statsd.dispersion import SwiftDispersionCollector
 
-import time
+import re, time
 
 def expected_gauges_dispersion():
     return {
@@ -88,6 +88,78 @@ def expected_gauges_recon():
         "swift_cluster.storage_free_bytes": 634467918188544,
         "swift_cluster.storage_used_bytes": 124471551447040,
         "swift_cluster.storage_used_percent": 0.16400721852930755,
+        "swift_cluster.storage_capacity_bytes.disk.rhelswift.from.10.0.0.1": 340050653184,
+        "swift_cluster.storage_capacity_bytes.disk.rhelswift.from.10.0.0.2": 340050653184,
+        "swift_cluster.storage_capacity_bytes.disk.rhelswift.from.10.0.0.3": 340050653184,
+        "swift_cluster.storage_capacity_bytes.disk.rhelswift.from.10.0.0.4": 340050653184,
+        "swift_cluster.storage_capacity_bytes.disk.rhelswift.from.10.0.0.5": 340050653184,
+        "swift_cluster.storage_capacity_bytes.disk.rhelswift.from.10.0.0.6": 340050653184,
+        "swift_cluster.storage_capacity_bytes.disk.rhelswift.from.10.0.0.7": 340050653184,
+        "swift_cluster.storage_capacity_bytes.disk.rhelswift.from.10.0.0.8": 340050653184,
+        "swift_cluster.storage_capacity_bytes.disk.rhelswift.from.10.0.0.9": 340260265984,
+        "swift_cluster.storage_capacity_bytes.disk.sdb.from.10.0.0.1": 5999038128128,
+        "swift_cluster.storage_capacity_bytes.disk.sdb.from.10.0.0.2": 5999038128128,
+        "swift_cluster.storage_capacity_bytes.disk.sdb.from.10.0.0.3": 5999038128128,
+        "swift_cluster.storage_capacity_bytes.disk.sdb.from.10.0.0.4": 5999038128128,
+        "swift_cluster.storage_capacity_bytes.disk.sdb.from.10.0.0.5": 5999038128128,
+        "swift_cluster.storage_capacity_bytes.disk.sdb.from.10.0.0.6": 5999038128128,
+        "swift_cluster.storage_capacity_bytes.disk.sdb.from.10.0.0.7": 5999038128128,
+        "swift_cluster.storage_capacity_bytes.disk.sdb.from.10.0.0.8": 5999038128128,
+        "swift_cluster.storage_capacity_bytes.disk.sdb.from.10.0.0.9": 5999038128128,
+        "swift_cluster.storage_free_bytes.disk.rhelswift.from.10.0.0.1": 338804719616,
+        "swift_cluster.storage_free_bytes.disk.rhelswift.from.10.0.0.2": 339063488512,
+        "swift_cluster.storage_free_bytes.disk.rhelswift.from.10.0.0.3": 307838889984,
+        "swift_cluster.storage_free_bytes.disk.rhelswift.from.10.0.0.4": 307665162240,
+        "swift_cluster.storage_free_bytes.disk.rhelswift.from.10.0.0.5": 339085807616,
+        "swift_cluster.storage_free_bytes.disk.rhelswift.from.10.0.0.6": 339335892992,
+        "swift_cluster.storage_free_bytes.disk.rhelswift.from.10.0.0.7": 317821255680,
+        "swift_cluster.storage_free_bytes.disk.rhelswift.from.10.0.0.8": 338808737792,
+        "swift_cluster.storage_free_bytes.disk.rhelswift.from.10.0.0.9": 329366417408,
+        "swift_cluster.storage_free_bytes.disk.sdb.from.10.0.0.1": 4985031204864,
+        "swift_cluster.storage_free_bytes.disk.sdb.from.10.0.0.2": 5008230141952,
+        "swift_cluster.storage_free_bytes.disk.sdb.from.10.0.0.3": 5008142630912,
+        "swift_cluster.storage_free_bytes.disk.sdb.from.10.0.0.4": 5069331111936,
+        "swift_cluster.storage_free_bytes.disk.sdb.from.10.0.0.5": 4994429317120,
+        "swift_cluster.storage_free_bytes.disk.sdb.from.10.0.0.6": 4984044630016,
+        "swift_cluster.storage_free_bytes.disk.sdb.from.10.0.0.7": 4996040007680,
+        "swift_cluster.storage_free_bytes.disk.sdb.from.10.0.0.8": 5052502216704,
+        "swift_cluster.storage_free_bytes.disk.sdb.from.10.0.0.9": 5015356829696,
+        "swift_cluster.storage_used_bytes.disk.rhelswift.from.10.0.0.1": 1245933568,
+        "swift_cluster.storage_used_bytes.disk.rhelswift.from.10.0.0.2": 987164672,
+        "swift_cluster.storage_used_bytes.disk.rhelswift.from.10.0.0.3": 32211763200,
+        "swift_cluster.storage_used_bytes.disk.rhelswift.from.10.0.0.4": 32385490944,
+        "swift_cluster.storage_used_bytes.disk.rhelswift.from.10.0.0.5": 964845568,
+        "swift_cluster.storage_used_bytes.disk.rhelswift.from.10.0.0.6": 714760192,
+        "swift_cluster.storage_used_bytes.disk.rhelswift.from.10.0.0.7": 22229397504,
+        "swift_cluster.storage_used_bytes.disk.rhelswift.from.10.0.0.8": 1241915392,
+        "swift_cluster.storage_used_bytes.disk.rhelswift.from.10.0.0.9": 10893848576,
+        "swift_cluster.storage_used_bytes.disk.sdb.from.10.0.0.1": 1014006923264,
+        "swift_cluster.storage_used_bytes.disk.sdb.from.10.0.0.2": 990807986176,
+        "swift_cluster.storage_used_bytes.disk.sdb.from.10.0.0.3": 990895497216,
+        "swift_cluster.storage_used_bytes.disk.sdb.from.10.0.0.4": 929707016192,
+        "swift_cluster.storage_used_bytes.disk.sdb.from.10.0.0.5": 1004608811008,
+        "swift_cluster.storage_used_bytes.disk.sdb.from.10.0.0.6": 1014993498112,
+        "swift_cluster.storage_used_bytes.disk.sdb.from.10.0.0.7": 1002998120448,
+        "swift_cluster.storage_used_bytes.disk.sdb.from.10.0.0.8": 946535911424,
+        "swift_cluster.storage_used_bytes.disk.sdb.from.10.0.0.9": 983681298432,
+        "swift_cluster.storage_used_percent.disk.rhelswift.from.10.0.0.1": 0.0036639646368384726,
+        "swift_cluster.storage_used_percent.disk.rhelswift.from.10.0.0.2": 0.002902993018119125,
+        "swift_cluster.storage_used_percent.disk.rhelswift.from.10.0.0.3": 0.0947263676702022,
+        "swift_cluster.storage_used_percent.disk.rhelswift.from.10.0.0.4": 0.09523725551109688,
+        "swift_cluster.storage_used_percent.disk.rhelswift.from.10.0.0.5": 0.0028373583728360787,
+        "swift_cluster.storage_used_percent.disk.rhelswift.from.10.0.0.6": 0.0021019227144764407,
+        "swift_cluster.storage_used_percent.disk.rhelswift.from.10.0.0.7": 0.06537084194916033,
+        "swift_cluster.storage_used_percent.disk.rhelswift.from.10.0.0.8": 0.0036521482325399465,
+        "swift_cluster.storage_used_percent.disk.rhelswift.from.10.0.0.9": 0.03201622306529396,
+        "swift_cluster.storage_used_percent.disk.sdb.from.10.0.0.1": 0.16902825113072267,
+        "swift_cluster.storage_used_percent.disk.sdb.from.10.0.0.2": 0.16516114167208695,
+        "swift_cluster.storage_used_percent.disk.sdb.from.10.0.0.3": 0.1651757291839732,
+        "swift_cluster.storage_used_percent.disk.sdb.from.10.0.0.4": 0.1549760138767638,
+        "swift_cluster.storage_used_percent.disk.sdb.from.10.0.0.5": 0.16746164794279916,
+        "swift_cluster.storage_used_percent.disk.sdb.from.10.0.0.6": 0.1691927066362435,
+        "swift_cluster.storage_used_percent.disk.sdb.from.10.0.0.7": 0.16719315647373384,
+        "swift_cluster.storage_used_percent.disk.sdb.from.10.0.0.8": 0.15778127946644116,
+        "swift_cluster.storage_used_percent.disk.sdb.from.10.0.0.9": 0.16397316993532057,
 
         # from test/fixtures/recon_driveaudit
         "swift_cluster.drives_audit_errors.from.10.0.0.1": 0,
@@ -180,7 +252,6 @@ def expected_gauges_recon():
         "swift_cluster.drives_unmounted.from.10.0.0.7": 1,
         "swift_cluster.drives_unmounted.from.10.0.0.8": 0,
         "swift_cluster.drives_unmounted.from.10.0.0.9": 0,
-
     }
 
 class MockStatsClient(object):
@@ -214,7 +285,17 @@ def shared_test_setup():
 def test_recon():
     config, statsd = shared_test_setup()
     SwiftReconCollector(config).run(statsd)
-    assert statsd.gauges == expected_gauges_recon()
+
+    # You can't believe how many individual diskusage metrics there are. I keep
+    # those for disks named rhel-swift and sdb, and remove those for disks
+    # named sdc through sdo.
+    rx = re.compile(r"\.disk\.sd[c-o]\.")
+    gauges = {}
+    for key in statsd.gauges:
+        if rx.search(key) is None:
+            gauges[key] = statsd.gauges[key]
+
+    assert gauges == expected_gauges_recon()
 
 def test_dispersion():
     config, statsd = shared_test_setup()
