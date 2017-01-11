@@ -97,8 +97,11 @@ class SwiftReconCollector(Collector):
         self.submit('storage_free_bytes',     total_free)
         self.submit('storage_used_bytes',     total_used)
         self.submit('storage_capacity_bytes', total_size)
-        self.submit('storage_used_percent',
-            float(total_used) / float(total_size))
+        if total_size == 0:
+            self.submit('storage_used_percent', 1.0)
+        else:
+            self.submit('storage_used_percent',
+                float(total_used) / float(total_size))
 
     def __collect_md5(self):
         """ Parser for `swift-recon --md5`. """
