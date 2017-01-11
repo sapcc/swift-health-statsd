@@ -54,6 +54,7 @@ class SwiftReconCollector(Collector):
                     continue
         if not result:
             log.error("swift-recon {0} did not return any usable output!".format(params))
+            return {}
         return result
 
     def collect(self):
