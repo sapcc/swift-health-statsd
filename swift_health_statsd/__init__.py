@@ -28,8 +28,9 @@ def main():
     # initialize collector config
     add_hostname_suffix = os.getenv("ADD_HOSTNAME_SUFFIX", "false") == "true"
     config = CollectorConfig(
-        recon_path             = os.getenv("SWIFT_RECON"),
-        dispersion_report_path = os.getenv("SWIFT_DISPERSION_REPORT"),
+        recon_path             = os.getenv("SWIFT_RECON", "swift-recon"),
+        dispersion_report_path = os.getenv("SWIFT_DISPERSION_REPORT",
+                                           "swift-dispersion-report"),
         add_hostname_suffix    = add_hostname_suffix,
     )
 
