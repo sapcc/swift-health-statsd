@@ -41,5 +41,5 @@ def main():
     )
 
     # run collectors
-    for collector_class in [SwiftDispersionCollector, SwiftReconCollector]:
+    for collector_class in [SwiftReconCollector, SwiftDispersionCollector]:
         collector_class(config).run(statsd)
