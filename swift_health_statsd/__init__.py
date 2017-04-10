@@ -23,7 +23,7 @@ from swift_health_statsd.recon      import SwiftReconCollector
 
 def main():
     log_level = os.getenv("LOG_LEVEL", "warn").upper()
-    logging.basicConfig(level=log_level)
+    logging.basicConfig(level=log_level, format="%(asctime)s %(levelname)s: %(message)s")
 
     # initialize collector config
     add_hostname_suffix = os.getenv("ADD_HOSTNAME_SUFFIX", "false") == "true"
