@@ -28,7 +28,10 @@ class SwiftDispersionCollector(Collector):
     def logger(self):
         return log
 
-    def collect(self):
+    def collector_steps(self):
+        return { "dispersion": self.__collect }
+
+    def __collect(self):
         cmd = " ".join((self.config.dispersion_report_path, '-j'))
         out = check_output(cmd, timeout=30)
 

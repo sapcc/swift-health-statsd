@@ -14,6 +14,7 @@
 
 import logging
 import os
+import sys
 
 from statsd import StatsClient
 
@@ -41,5 +42,10 @@ def main():
     )
 
     # run collectors
+    ok = True
     for collector_class in [SwiftReconCollector, SwiftDispersionCollector]:
-        collector_class(config).run(statsd)
+        if not collector_class(config).run(statsd):
+            ok = False
+
+    if not ok:
+        sys.exit(1)

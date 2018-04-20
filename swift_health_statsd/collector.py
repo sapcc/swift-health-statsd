@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import numbers
+import sys
+import traceback
 
 class CollectorConfig(object):
     """ Helper class for the Collector class that contains its configuration
@@ -38,17 +40,18 @@ class CollectorConfig(object):
 class Collector(object):
     """ Subclasses of this implement collection of a certain type of metrics.
         Subclasses must:
-        * implement logger(), metric_name_prefix(), collect() and optionally
-          prepare()
+        * implement logger(), metric_name_prefix(), collector_steps() and
+          optionally prepare()
     """
 
     def __init__(self, config):
         """ Initializer. Takes a CollectorConfig instance. """
         self.config = config
 
-    def collect(self):
-        """ Must be overridden by subclass to collect metrics, and submit them
-            by calling submit() for each metric.
+    def collector_steps(self):
+        """ Must be overridden by subclass. Returns a dict mapping step names
+        to steps (functions that collect metrics, and submit them by calling
+        self.submit() for each metric).
         """
         raise NotImplementedError
 
@@ -71,12 +74,21 @@ class Collector(object):
         self.__skipped_count = 0
         self.__statsd = statsd
 
-        self.collect()
+        ok = True
+        for name, step in self.collector_steps().items():
+            try:
+                step()
+            except:
+                ok = False
+                self.__log.error("collector \"{}\" failed, detailed exception follows".format(name))
+                traceback.print_exc(None, sys.stderr) # logs exception and traceback
 
         self.__log.info("Submitted {} {} metrics ({} skipped)"
             .format(self.__metric_count,
                     self.metric_name_prefix(),
                     self.__skipped_count))
+
+        return ok and self.__skipped_count == 0
 
     def submit(self, metric, value, hostname=None):
         """ Call this from collect() to submit a metric value. """

@@ -57,16 +57,16 @@ class SwiftReconCollector(Collector):
             return {}
         return result
 
-    def collect(self):
-        # This method is split into multiple subparts (one for each subprocess
-        # call to swift-recon) for better readability.
-        self.__collect_driveaudit()
-        self.__collect_unmounted()
-        self.__collect_diskusage()
-        self.__collect_md5()
-        self.__collect_updater_sweeps()
-        self.__collect_replication()
-        self.__collect_quarantined()
+    def collector_steps(self):
+        return {
+            "driveaudit":     self.__collect_driveaudit,
+            "unmounted":      self.__collect_unmounted,
+            "diskusage":      self.__collect_diskusage,
+            "md5":            self.__collect_md5,
+            "updater_sweeps": self.__collect_updater_sweeps,
+            "replication":    self.__collect_replication,
+            "quarantined":    self.__collect_quarantined,
+        }
 
     ############################################################################
     # subparts of collect()
