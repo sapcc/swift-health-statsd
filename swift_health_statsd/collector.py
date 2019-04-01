@@ -104,7 +104,7 @@ class Collector(object):
 
         # skip metric if no useful value was provided
         if value is None:
-            self.__log.debug("Not sending {0} = None".format(this_metric))
+            self.__log.warn("Not sending {0} = None".format(this_metric))
             self.__skipped_count += 1
             return
 
