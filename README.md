@@ -1,10 +1,14 @@
+# Archived project. No maintenance.
+
+This project is not maintained anymore and is archived. Consider switching to the new [swift-health-exporter](https://github.com/sapcc/swift-health-exporter).
+
 # swift-health-statsd
 
 This repository contains a small Python program that will scrape metrics from
 the output of `swift-dispersion-report` and `swift-recon`, and submit these to
 a StatsD endpoint.
 
-# Installation
+## Installation
 
 Like any other setuptools-based Python 2 program, for example:
 
@@ -21,7 +25,7 @@ pip install -e .
 python setup.py test
 ```
 
-# Usage
+## Usage
 
 Run the `swift-health-statsd` program from your `$PATH` or, if installed into a
 virtualenv, from the virtualenv's `bin` directory. The following environment variables are recognized:
